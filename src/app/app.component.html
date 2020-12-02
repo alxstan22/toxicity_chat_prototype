@@ -1,0 +1,36 @@
+<div class="container-fluid main-container">
+  <div class="row" style="height: 95%;">
+    <div class="col-8 text-col">
+      <div *ngFor="let message of messages">
+        <div class="row align-items-end">
+          <div class="col-12">
+            <p>[{{message.timestamp.toLocaleTimeString()}}]: {{message.text}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 chart-col">
+      <P> A chart</P>
+      <div class="container">
+        <h1>Filter Settings</h1>
+          <form [formGroup]="form" (ngSubmit)="submit()">
+              <div class="form-group">
+                  <label for="filts">Choose what you do NOT want to see:</label>
+                  <div *ngFor="let filter of filters">
+                    <label>
+                      <input type="checkbox" [value]="filter.id" (change)="onCheckboxChange($event)" />
+                      {{filter.name}}
+                    </label>
+                  </div>
+              </div>
+              <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Submit</button>
+          </form>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="height: 5%;">
+    <div class="col-12 chat-col h-100">
+      <input #box class="input chat-input" type="text" (keyup.enter)="onEnter(box.value); box.value='' " placeholder="Type here to chat...">
+    </div>
+  </div>
+</div>
