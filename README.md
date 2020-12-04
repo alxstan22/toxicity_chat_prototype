@@ -2,7 +2,15 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.1.
 
-To run, run the command npm run electron-build
+To run, run the command npm run electron-build.
+
+
+If initial run does not work, run
+```
+ng add @angular/cli
+ng install
+npm run electron-build
+```
 **IGNORE EVERYTHING BELOW THIS**
 
 ## Development server
@@ -27,5 +35,12 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Further help
+
+If initial install still does not work, try this:
+```
+npm install
+ng update
+npm update
+```
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
