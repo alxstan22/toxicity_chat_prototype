@@ -13,17 +13,16 @@
       <P> A chart</P>
       <div class="container">
         <h1>Filter Settings</h1>
-          <form [formGroup]="form" (ngSubmit)="submit()">
+          <form [formGroup]="form">
               <div class="form-group">
                   <label for="filts">Choose what you do NOT want to see:</label>
                   <div *ngFor="let filter of filters">
                     <label>
-                      <input type="checkbox" [value]="filter.id" (change)="onCheckboxChange($event)" />
+                      <input type="checkbox" [(ngModel)]="finalFilters" [value]="filter.id" (change)="onCheckboxChange($event, filter)" />
                       {{filter.name}}
                     </label>
                   </div>
               </div>
-              <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Submit</button>
           </form>
       </div>
     </div>

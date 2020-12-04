@@ -8,6 +8,12 @@ interface httpResp {
     user_message: string;
 }
 
+interface filterFormat {
+  id: number;
+  name: string;
+}
+
+
 
 @Component({
   selector: 'app-root',
@@ -15,17 +21,21 @@ interface httpResp {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent{
   title = 'chat-demo';
   messages = [];
+  filterChoices: any = [];
+  finalFilters: any = [];
 
-  onEnter(value: string){
-    if(value){
-      this.postRequest(value)
+  onEnter(msg: string){
+    if(msg){
+      this.postRequest(msg, this.finalFilters)
     }
   }
 
+
   form: FormGroup;
+//Fills checkboxes within ap.html
   filters: any = [
     {id: 1, name: 'Toxic'},
     {id: 2, name: 'Severe Toxic'},
@@ -34,7 +44,7 @@ export class AppComponent {
     {id: 5, name: 'Insult'},
     {id: 6, name: 'Identity Hate'}
   ];
-  //checkboxes = [{'name':'checkbox1',checked:false},{'name':'checkbox2',checked:false}];
+
 
   constructor(private formBuilder: FormBuilder){
     this.form = this.formBuilder.group({
@@ -42,51 +52,71 @@ export class AppComponent {
     })
   }
 
-  onCheckboxChange(e){
+  onCheckboxChange(ev, fil){
     const filts: FormArray = this.form.get('filts') as FormArray;
+    //When checkbox checked
+    if(ev.target.checked){
+      filts.push(new FormControl(ev.target.value));
+      this.filterChoices.push(fil);
 
-    if(e.target.checked){
-      filts.push(new FormControl(e.target.value));
+      let f = JSON.stringify(this.filterChoices);
+      JSON.parse(f, (key, value) => {
+        if(key === 'name'){
+          //Add to filters if box checked
+          if (this.finalFilters.includes(value) === false) this.finalFilters.push(value);
+        }
+      });
 
     }else{
-      const indx = filts.controls.findIndex(x => x.value === e.target.value);
+      //When checkbox unchecked
+      let indx = filts.controls.findIndex(x => x.value === ev.target.value);
+
+      let k = JSON.stringify(fil);
+      JSON.parse(k, (key, value) => {
+
+        if(key === 'name'){
+          if (this.finalFilters.includes(value) === true){
+            let i = (ind) => ind ===value;
+            let indx2 = this.finalFilters.findIndex(i);
+            //Delete from filters if box unchecked
+            this.finalFilters.splice(indx2, 1);
+          }
+        }
+      });
+
       filts.removeAt(indx);
+      this.filterChoices= this.filterChoices.filter(val => val != fil);
+      filts.push(new FormControl(ev.target.value));
     }
   }
 
-  submit(){
-    console.log(this.form.value);
-  }
 
-
-//POST REQUEST
-  postRequest(value: string){
-    //const sendData = { filters: ['Obscene','Insult'], text: value };
-    const sendData = { filters: ['Obscene','Insult'], text: value };
-    //JSON POST request
+  postRequest(msg: string, f: any[]){
+    //JSON POST request sends message and filter choices
+    let sendData = { filters: f, text: msg};
     fetch('http://localhost:5000/filter', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json',},
       body: JSON.stringify(sendData),
     })
     .then((response) => response.json())
-    //Runs successfully
+    //Sends successfully
     .then((data) => {
       console.log('Success:', data);
       let resp : httpResp = data;
       if(resp.block == false){
-        this.messages.push(new Message(value))
+        var filly = JSON.stringify(f)
+        //Send message to the chatbox screen
+        this.messages.push(new Message(msg))
       }else{
         this.messages.push(new Message('(This message was blocked due to filter settings. Reason: '+ resp.reason + ')'))
       }
     })
-    //Runs into an error...
+    //Handle error
     .catch((error) => {
       console.error('Error:', error);
       this.messages.push(new Message('(ERROR: Message cannot be sent)'))
     });
   }
-
-
 
 }
