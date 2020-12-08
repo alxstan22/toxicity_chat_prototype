@@ -11,6 +11,8 @@ ng add @angular/cli
 ng install
 npm run electron-build
 ```
+(Command line returning red text does not indicate failure)
+
 **IGNORE EVERYTHING BELOW THIS**
 
 ## Development server
