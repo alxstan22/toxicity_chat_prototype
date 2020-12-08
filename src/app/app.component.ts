@@ -109,7 +109,7 @@ export class AppComponent{
         //Send message to the chatbox screen
         this.messages.push(new Message(msg))
       }else{
-        this.messages.push(new Message('(This message was blocked due to filter settings. Reason: '+ resp.reason + ')'))
+        this.messages.push(new Message('(Message sent to Community Administrator due to filter settings. Reason: '+ resp.reason + ')'))
       }
     })
     //Handle error
